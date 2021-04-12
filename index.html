@@ -1,0 +1,138 @@
+<!--
+FindMyArduino
+Tested with ESP32 and GY-GPS6MV2 module
+Version: 1.0
+Authors: Tamer
+Updated: 25-09-2017
+-->
+<meta charset="UTF-8"> 
+<!-- Load Google Maps API before doing anything else. Start with // to make it work on both HTTP and HTTPS. -->
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyA2LReWhDUeiIsEqcQot3AioOsK_5FTnIQ"></script><!-- Yes you can use my API key... -->
+
+<style>
+#map-canvas {
+    height: 400px;
+}
+</style>
+
+<h1>FindMyArduino</h1>
+<p>Author: Qarizma (Minor Smart Industry)</p>
+<div id="map-canvas"></div>
+<p id="coordinates"><font color="orange">Connecting...</font></p>
+
+<script type="text/javascript">
+var url = '//YOURLINK.COM/';
+var map;
+var json;
+var gpsdata;
+var curTime;
+var remTime;
+var markers = [];
+var positions = [
+    ['GPS', 51.988996, 5.949398, 4],
+];
+
+function setMarkers(locations) {
+
+    for (var i = 0; i < locations.length; i++) {
+        var beach = locations[i];
+        var myLatLng = new google.maps.LatLng(beach[1], beach[2]);
+        var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            animation: google.maps.Animation.DROP,
+            title: beach[0],
+            zIndex: beach[3],
+            // Uncomment below to use a custom marker on the map.
+            //icon: url + 'icon.png'
+        });
+        
+        // Push marker to markers array
+        markers.push(marker);
+    }
+}
+
+function reloadMarkers() {
+    readTextFile(url + "gps.json?" + Math.random());
+    var json = JSON.parse(gpsdata);
+    positions = [['GPS', json[1], json[0], 4],];
+
+    var readableTime = new Date(json[2] * 1000);
+
+    curTime = new Date();
+    remTime = json[2];
+
+    // Nice function to find out if the Arduino is online by comparing timestamps.
+    if ((curTime.getTime()/1000-remTime) > 10) {
+        console.log('Arduino: Offline Lat:' + json[1] + ' Lon: ' + json[0] + ' Update: ' + readableTime);
+        document.getElementById("coordinates").innerHTML = "<font color=\"red\">ARDUINO OFFLINE</font> <br>Lat: " + json[1] + "<br> Lon: " + json[0] + "<br> Update: " + readableTime;
+    } else {
+        console.log('Arduino: Online Lat:' + json[1] + ' Lon: ' + json[0] + ' Update: ' + readableTime);
+        document.getElementById("coordinates").innerHTML = "<font color=\"green\">ARDUINO ONLINE</font> <br>Lat: " + json[1] + "<br> Lon: " + json[0] + "<br> Update: " + readableTime;
+    }
+
+    // Move map to marker location.
+    moveToLocation(json[1], json[0]);
+ 
+    // Loop through markers and set map to null for each
+    for (var i=0; i<markers.length; i++) {
+        markers[i].setMap(null);
+    }
+    
+    // Reset the markers array
+    markers = [];
+    
+    // Call set markers to re-add markers
+    setMarkers(positions);
+}
+
+function initialize() {
+
+    // Read remote JSON data with GPS info to start with.
+    readTextFile(url + "gps.json");
+    
+    var mapOptions = {
+        zoom: 25,
+        center: new google.maps.LatLng(51.988996, 5.949398), // start coordinates of HAN campus.
+        mapTypeId: google.maps.MapTypeId.SATELLITE
+    }
+    
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+    // Set the marker(s).
+    setMarkers(positions);
+}
+
+initialize();
+
+// Set an interval. 3000ms = 3 seconds.
+window.setInterval(function(){
+  // Reload the markers every X seconds.
+  reloadMarkers();
+}, 3000);
+
+// Function to focus the map on a coordinate.
+function moveToLocation(lat, lng){
+    var center = new google.maps.LatLng(lat, lng);
+    map.panTo(center);
+}
+
+// JS function to read data from remote file.
+function readTextFile(file)
+{
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, true);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                gpsdata = rawFile.responseText;
+            }
+        }
+    }
+    rawFile.send(null);
+}
+
+</script>
