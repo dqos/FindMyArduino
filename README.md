@@ -5,7 +5,7 @@ FindMyArduino example inspired by Apple's Find My iPhone, locate your Arduino by
 During my minor Smart Industry we had to build something for the *Smart Room*. This something is based on the Arduino knock off ESP32, which is a nice IoT hardware platform compatible with the Arduino IDE. In the end it will be a room full of smart IoT devices connected to eachother.
 
 
-![fma_ui](https://raw.githubusercontent.com/dqos/mancave/main/img/fma_ui.jpg)
+![fma_ui](https://raw.githubusercontent.com/dqos/FindMyArduino/main/img/fma_ui.jpg)
 
 ### Features
 - **Realtime** location using Google Maps
@@ -17,13 +17,13 @@ During my minor Smart Industry we had to build something for the *Smart Room*. T
 ### Hardware
 The hardware is based on the ESP32 and a GY-GPS6MV2 GPS module. These components are Arduino compatible.
 
-![fma_hardware](https://raw.githubusercontent.com/dqos/mancave/main/img/fma_hardware.jpg)
+![fma_hardware](https://raw.githubusercontent.com/dqos/FindMyArduino/main/img/fma_hardware.jpg)
 
-![fma_circuit](https://raw.githubusercontent.com/dqos/mancave/main/img/fma_circuit.jpg)
+![fma_circuit](https://raw.githubusercontent.com/dqos/FindMyArduino/main/img/fma_circuit.jpg)
 
-![fma_esp32](https://raw.githubusercontent.com/dqos/mancave/main/img/fma_esp32.jpg)
+![fma_esp32](https://raw.githubusercontent.com/dqos/FindMyArduino/main/img/fma_esp32.jpg)
 
-![fma_gps](https://raw.githubusercontent.com/dqos/mancave/main/img/fma_gps.jpg)
+![fma_gps](https://raw.githubusercontent.com/dqos/FindMyArduino/main/img/fma_gps.jpg)
 
 ### Software
 The software is based on the DemoProgram by Franz. If you don't have access to this code I refer you to the following links:
